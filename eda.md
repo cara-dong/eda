@@ -145,20 +145,74 @@ weather_df |>
     # names from means the columns
     names_from = name,
     values_from = n
+  ) |>
+  knitr::kable(digits=2)
+```
+
+| month      | CentralPark_NY | Molokai_HI | Waterhole_WA |
+|:-----------|---------------:|-----------:|-------------:|
+| 2021-01-01 |             31 |         31 |           31 |
+| 2021-02-01 |             28 |         28 |           28 |
+| 2021-03-01 |             31 |         31 |           31 |
+| 2021-04-01 |             30 |         30 |           30 |
+| 2021-05-01 |             31 |         31 |           31 |
+| 2021-06-01 |             30 |         30 |           30 |
+| 2021-07-01 |             31 |         31 |           31 |
+| 2021-08-01 |             31 |         31 |           31 |
+| 2021-09-01 |             30 |         30 |           30 |
+| 2021-10-01 |             31 |         31 |           31 |
+| 2021-11-01 |             30 |         30 |           30 |
+| 2021-12-01 |             31 |         31 |           31 |
+| 2022-01-01 |             31 |         31 |           31 |
+| 2022-02-01 |             28 |         28 |           28 |
+| 2022-03-01 |             31 |         31 |           31 |
+| 2022-04-01 |             30 |         30 |           30 |
+| 2022-05-01 |             31 |         31 |           31 |
+| 2022-06-01 |             30 |         30 |           30 |
+| 2022-07-01 |             31 |         31 |           31 |
+| 2022-08-01 |             31 |         31 |           31 |
+| 2022-09-01 |             30 |         30 |           30 |
+| 2022-10-01 |             31 |         31 |           31 |
+| 2022-11-01 |             30 |         30 |           30 |
+| 2022-12-01 |             31 |         31 |           31 |
+
+## General Summaries
+
+``` r
+weather_df |>
+  group_by(name) |>
+  summarize(
+    mean_tmax = mean(tmax, na.rm = TRUE), 
+    std_tmax = sd(tmax, na.rm = TRUE), 
+    median_tmax = median(tmax, na.rm = TRUE)
   )
 ```
 
-    ## # A tibble: 24 × 4
-    ##    month      CentralPark_NY Molokai_HI Waterhole_WA
-    ##    <date>              <int>      <int>        <int>
-    ##  1 2021-01-01             31         31           31
-    ##  2 2021-02-01             28         28           28
-    ##  3 2021-03-01             31         31           31
-    ##  4 2021-04-01             30         30           30
-    ##  5 2021-05-01             31         31           31
-    ##  6 2021-06-01             30         30           30
-    ##  7 2021-07-01             31         31           31
-    ##  8 2021-08-01             31         31           31
-    ##  9 2021-09-01             30         30           30
-    ## 10 2021-10-01             31         31           31
-    ## # ℹ 14 more rows
+    ## # A tibble: 3 × 4
+    ##   name           mean_tmax std_tmax median_tmax
+    ##   <chr>              <dbl>    <dbl>       <dbl>
+    ## 1 CentralPark_NY     17.7      9.96        18.9
+    ## 2 Molokai_HI         28.3      1.80        28.3
+    ## 3 Waterhole_WA        7.38     7.55         6.1
+
+``` r
+# by default, na.rm is FALSE, it will take NA as NA
+```
+
+Plot the line plot:
+
+``` r
+weather_df |>
+  group_by(name, month) |>
+  summarize(
+    mean_tmax = mean(tmax, na.rm = TRUE)
+    ) |>
+  ggplot(aes(x=month, y=mean_tmax, color=name)) + 
+  geom_point() +
+  geom_line()
+```
+
+    ## `summarise()` has grouped output by 'name'. You can override using the
+    ## `.groups` argument.
+
+![](eda_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->

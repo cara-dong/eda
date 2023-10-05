@@ -70,7 +70,9 @@ weather_df |>
     # names from means the columns
     names_from = name,
     values_from = n
-  )
+  ) |>
+  # make this in the knitted file look like a table
+  knitr::kable(digits=2)
 ```
 
 ## General Summaries
@@ -85,7 +87,40 @@ weather_df |>
 # by default, na.rm is FALSE, it will take NA as NA
 ```
 
+Plot the line plot:
 ```{r}
+weather_df |>
+  group_by(name, month) |>
+  summarize(
+    mean_tmax = mean(tmax, na.rm = TRUE)
+    ) |>
+  ggplot(aes(x=month, y=mean_tmax, color=name)) + 
+  geom_point() +
+  geom_line()
+```
 
+## Grouped Mutate
+```{r}
+weather_df |>
+  group_by(name) |>
+  mutate(
+    mean_tmax = mean(tmax, na.rm = TRUE),
+    centered_tmax = tmax - mean_tmax) |> 
+  ggplot(aes(x = date, y = centered_tmax, color = name)) + 
+    geom_point()
+```
+
+```{r}
+weather_df |>
+  group_by(name, month) |>
+  mutate(temp_ranking = min_rank(tmax)) |>
+  filter(min_rank(tmax) < 2)
+```
+
+### previous day, later day -> window function
+```{r}
+weather_df |>
+  group_by(name) |> # must do grouping
+  mutate(yesterday_tmax = lag(tmax, 3))
 ```
 
