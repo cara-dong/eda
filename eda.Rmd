@@ -50,4 +50,42 @@ weather_df |>
   ggplot(aes(x = tmin, y = tmax, color = name, shape = name)) + 
   geom_point(alpha = .75)
 ```
+Waterhole is doing sth fundamentally different
+
+## Grouping
+```{r}
+weather_df |>
+  # often somewhat invisible, but can only see the note "groups: name[3], denoting the unique groups"
+  group_by(name, month) |>
+  # the next line is what gives you a new aggregated column
+  count(month, month = "n_obs")
+```
+Count produces a dataframe you can use or manipulate directly
+
+```{r}
+weather_df |>
+  count(name, month) |>
+  # pivot_wider is to untidy something
+  pivot_wider(
+    # names from means the columns
+    names_from = name,
+    values_from = n
+  )
+```
+
+## General Summaries
+```{r}
+weather_df |>
+  group_by(name) |>
+  summarize(
+    mean_tmax = mean(tmax, na.rm = TRUE), 
+    std_tmax = sd(tmax, na.rm = TRUE), 
+    median_tmax = median(tmax, na.rm = TRUE)
+  )
+# by default, na.rm is FALSE, it will take NA as NA
+```
+
+```{r}
+
+```
 
